@@ -1,25 +1,111 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
     font-family: 'Montserrat', sans-serif;
     background-color: #0a0a1a;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-.neon-border {
-    border-radius: 1rem;
-    border: 2px solid #00ffff;
-    box-shadow:
-        0 0 15px rgba(0, 255, 255, 0.5),
-        0 0 25px rgba(0, 255, 255, 0.4),
-        0 0 40px rgba(0, 255, 255, 0.3),
-        0 0 60px rgba(0, 255, 255, 0.2);
-    transition: all 0.3s ease-in-out;
-}
-
-.input-glow:focus {
-    box-shadow: 0 0 10px #0dffff, 0 0 20px #0dffff;
-}
-
+/* Neon Effects */
 .neon-glow {
-    text-shadow: 0 0 10px #38b2f8, 0 0 20px #38b2f8, 0 0 30px #00ffff;
+    color: #38bdf8;
+    text-shadow: 0 0 8px #38b2f8, 0 0 12px #38b2f8;
+    font-weight: 700;
+}
+
+.neon-box {
+    box-shadow: 0 0 8px rgba(56, 178, 248, 0.25), 0 0 15px rgba(56, 178, 248, 0.15);
+}
+
+.neon-box-hover {
+    transition: all 0.3s ease;
+}
+
+.neon-box-hover:hover {
+    box-shadow: 0 0 15px #38b2f8, 0 0 25px rgba(56, 178, 248, 0.5);
+}
+
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(56, 178, 248, 0.4), 0 0 30px rgba(56, 178, 248, 0.3);
+}
+
+/* Background Gradient */
+.hero-bg {
+    background: linear-gradient(135deg, #070B14, #0F172A);
+    position: relative;
+}
+
+.hero-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(56, 178, 248, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(56, 178, 248, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+/* Smooth Pulse Animation */
+@keyframes pulse-slow {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+.animate-pulse-slow {
+    animation: pulse-slow 3s ease-in-out infinite;
+}
+
+/* Input Focus Enhancement */
+input:focus {
+    box-shadow: 0 0 0 3px rgba(56, 178, 248, 0.1);
+}
+
+/* Button Active State */
+button:active {
+    transform: scale(0.98);
+}
+
+/* Smooth Transitions */
+* {
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0F172A;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #38b2f8;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #5cc5ff;
 }

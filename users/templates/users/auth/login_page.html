@@ -5,52 +5,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="{% static 'img/logo_2.png'%}" type="image/png">
-    <title>Login</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="{% static 'img/logo_1.png'%}" type="image/png">
+    <title>NeonTech - Iniciar Sesión</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/auth/login_page.css' %}">
-
 </head>
 
-<body class="flex items-center justify-center min-h-screen">
+<body class="bg-gray-900 text-gray-100 min-h-screen flex items-center justify-center hero-bg">
+    
+    <!-- Decorative background elements -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-20 left-10 w-72 h-72 bg-sky-500/10 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div class="absolute bottom-20 right-10 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 1s;"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-sky-500/5 rounded-full blur-3xl"></div>
+    </div>
 
-    <div class="bg-deepBlue p-8 rounded-xl flex w-full max-w-3xl neon-border">
-
-        <!-- Imagen -->
-        <div class="w-1/2 flex justify-center items-center">
-            <img src="{% static 'img/logo.png' %}" alt="Usuario"
-                class="rounded-full w-48 h-48 border-4 border-cyan-500 neon-border">
-        </div>
-
-        <!-- Formulario -->
-        <div class="w-1/2 flex flex-col justify-center p-6">
-            <h2 class="text-2xl font-bold text-gray-100 text-center mb-4 neon-glow">Iniciar Sesión</h2>
-            <form method="POST" action="">
-                {% csrf_token %}
-                <div class="mb-4">
-                    <label class="block text-gray-300 text-sm font-bold mb-2">Correo Electrónico</label>
-                    <input type="email" name="email" required
-                        class="w-full px-3 py-2 border rounded-lg bg-gray-800 text-white input-glow" />
+    <div class="container max-w-5xl mx-auto px-4 py-8 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-0 bg-[#0F172A] border border-sky-500/30 rounded-2xl overflow-hidden neon-box card-hover">
+            
+            <!-- Panel Izquierdo - Branding -->
+            <div class="hidden lg:flex flex-col justify-center items-center p-12 bg-gradient-to-br from-[#070B14] to-[#0F172A] border-r border-sky-500/20 relative overflow-hidden">
+                <!-- Decorative Elements -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-0 left-0 w-64 h-64 bg-sky-500/10 rounded-full blur-3xl"></div>
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full">
+                    <div class="absolute top-10 right-10 w-2 h-2 bg-sky-400 rounded-full animate-ping"></div>
+                    <div class="absolute bottom-20 left-10 w-2 h-2 bg-sky-400 rounded-full animate-ping" style="animation-delay: 0.5s;"></div>
+                    <div class="absolute top-1/3 left-20 w-1 h-1 bg-sky-400 rounded-full animate-ping" style="animation-delay: 1s;"></div>
                 </div>
-                <div class="mb-4">
-                    <label class="block text-gray-300 text-sm font-bold mb-2">Contraseña</label>
-                    <input type="password" name="password" required
-                        class="w-full px-3 py-2 border rounded-lg bg-gray-800 text-white input-glow" />
+                
+                <!-- Logo and Brand -->
+                <div class="relative z-10 text-center">
+                    <div class="flex items-center justify-center mb-8">
+                        <!-- Logo Image -->
+                        <div class="relative mr-4">
+                            <div class="absolute inset-0 bg-sky-500/20 rounded-2xl blur-xl"></div>
+                            <img src="{% static 'img/logo_1.png' %}" alt="NeonTech Logo"
+                                class="h-20 w-20 rounded-3xl neon-box relative z-10 animate-pulse-slow">
+                        </div>
+                        <!-- Brand Name -->
+                        <h1 class="text-5xl font-bold tracking-wider">
+                            <span class="text-white">NEON</span><span class="text-sky-400">TECH</span>
+                        </h1>
+                    </div>
+                    
+                    <p class="text-gray-400 text-lg mb-8">
+                        Tecnología de última generación
+                    </p>
+                    
+                    <div class="space-y-4 text-left">
+                        <div class="flex items-center gap-3 bg-gray-800/30 p-3 rounded-lg border border-sky-500/20 hover:border-sky-500/40 transition duration-300">
+                            <div class="w-10 h-10 bg-sky-900/30 rounded-full flex items-center justify-center neon-box">
+                                <i class="fas fa-laptop text-sky-400"></i>
+                            </div>
+                            <span class="text-gray-300">Laptops de alto rendimiento</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-gray-800/30 p-3 rounded-lg border border-sky-500/20 hover:border-sky-500/40 transition duration-300">
+                            <div class="w-10 h-10 bg-sky-900/30 rounded-full flex items-center justify-center neon-box">
+                                <i class="fas fa-mobile-alt text-sky-400"></i>
+                            </div>
+                            <span class="text-gray-300">Celulares de última generación</span>
+                        </div>
+                        <div class="flex items-center gap-3 bg-gray-800/30 p-3 rounded-lg border border-sky-500/20 hover:border-sky-500/40 transition duration-300">
+                            <div class="w-10 h-10 bg-sky-900/30 rounded-full flex items-center justify-center neon-box">
+                                <i class="fas fa-shield-alt text-sky-400"></i>
+                            </div>
+                            <span class="text-gray-300">Compra 100% segura</span>
+                        </div>
+                    </div>
                 </div>
-                <button type="submit"
-                    class="w-full bg-cyan-500 text-white py-2 rounded-lg hover:bg-cyan-600 transition">Ingresar</button>
-            </form>
+            </div>
 
-            {% include '../partials/messages.html' %}
+            <!-- Panel Derecho - Formulario -->
+            <div class="flex flex-col justify-center p-8 lg:p-12">
+                
+                <!-- Logo Mobile -->
+                <div class="lg:hidden text-center mb-8">
+                    <div class="flex items-center justify-center">
+                        <!-- Logo Image -->
+                        <div class="relative mr-3">
+                            <div class="absolute inset-0 bg-sky-500/20 rounded-xl blur-lg"></div>
+                            <img src="{% static 'img/logo_1.png' %}" alt="NeonTech Logo"
+                                class="h-16 w-16 rounded-xl neon-box relative z-10">
+                        </div>
+                        <!-- Brand Name -->
+                        <h1 class="text-3xl font-bold tracking-wider">
+                            <span class="text-white">NEON</span><span class="text-sky-400 neon-glow">TECH</span>
+                        </h1>
+                    </div>
+                </div>
 
-            <p class="text-center text-gray-400 mt-4">
-                ¿No tienes una cuenta?
-                <a href="{% url 'register' %}" class="text-cyan-500 font-bold hover:underline neon-glow">Regístrate
-                    aquí</a>
-            </p>
+                <!-- Header -->
+                <div class="mb-8">
+                    <h2 class="text-3xl font-bold text-white mb-2">Bienvenido de nuevo</h2>
+                    <p class="text-gray-400">Ingresa tus credenciales para continuar</p>
+                </div>
+
+                <!-- Formulario -->
+                <form method="POST" action="" class="space-y-6">
+                    {% csrf_token %}
+                    
+                    <!-- Email Input -->
+                    <div class="space-y-2">
+                        <label class="block text-gray-300 text-sm font-semibold">
+                            <i class="fas fa-envelope mr-2 text-sky-400"></i>Correo Electrónico
+                        </label>
+                        <input 
+                            type="email" 
+                            name="email" 
+                            required
+                            placeholder="tu@email.com"
+                            class="w-full px-4 py-3 bg-gray-800/50 border border-sky-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition duration-300"
+                        />
+                    </div>
+
+                    <!-- Password Input -->
+                    <div class="space-y-2">
+                        <label class="block text-gray-300 text-sm font-semibold">
+                            <i class="fas fa-lock mr-2 text-sky-400"></i>Contraseña
+                        </label>
+                        <input 
+                            type="password" 
+                            name="password" 
+                            required
+                            placeholder="••••••••"
+                            class="w-full px-4 py-3 bg-gray-800/50 border border-sky-500/30 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition duration-300"
+                        />
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button 
+                        type="submit"
+                        class="w-full bg-sky-500 hover:bg-sky-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 transform hover:scale-[1.02] active:scale-[0.98] neon-box-hover"
+                    >
+                        <i class="fas fa-sign-in-alt mr-2"></i>Iniciar Sesión
+                    </button>
+                </form>
+
+                <!-- Messages -->
+                {% include '../partials/messages.html' %}
+
+                <!-- Divider -->
+                <div class="relative my-6">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-700"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="px-4 bg-[#0F172A] text-gray-400">¿No tienes cuenta?</span>
+                    </div>
+                </div>
+
+                <!-- Register Link -->
+                <div class="text-center">
+                    <a href="{% url 'register' %}" 
+                       class="inline-flex items-center text-sky-400 font-semibold hover:text-sky-300 transition duration-300">
+                        <i class="fas fa-user-plus mr-2"></i>Crear una cuenta nueva
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+
+                <!-- Back to Home -->
+                <div class="mt-6 text-center">
+                    <a href="/" class="text-gray-500 hover:text-gray-300 text-sm transition duration-300">
+                        <i class="fas fa-arrow-left mr-2"></i>Volver al inicio
+                    </a>
+                </div>
+            </div>
         </div>
     </div>
 
 </body>
-
 </html>

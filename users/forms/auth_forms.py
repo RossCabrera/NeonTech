@@ -8,42 +8,42 @@ class RegisterForm(UserCreationForm):
         required=True,
         label=_('Primer Nombre'),
         error_messages={'required': _('Este campo es obligatorio.')},
-        widget=forms.TextInput(attrs={'placeholder': 'Tu primer nombre'})
+        widget=forms.TextInput(attrs={'placeholder': 'Ingresa tu nombre'})
     )
     second_name = forms.CharField(
         required=False,
         label=_('Segundo Nombre'),
-        widget=forms.TextInput(attrs={'placeholder': 'Tu segundo nombre'})
+        widget=forms.TextInput(attrs={'placeholder': '(Opcional)'})
     )
     last_name = forms.CharField(
         required=True,
         label=_('Primer Apellido'),
         error_messages={'required': _('Este campo es obligatorio.')},
-        widget=forms.TextInput(attrs={'placeholder': 'Tu primer apellido'})
+        widget=forms.TextInput(attrs={'placeholder': 'Ingresa tu apellido'})
     )
     second_lastname = forms.CharField(
         required=False,
         label=_('Segundo Apellido'),
-        widget=forms.TextInput(attrs={'placeholder': 'Tu segundo apellido'})
+        widget=forms.TextInput(attrs={'placeholder': '(Opcional)'})
     )
     email = forms.EmailField(
         required=True,
         label=_('Correo Electrónico'),
         error_messages={'required': _('Este campo es obligatorio.'), 'invalid': _('Ingrese un correo válido.')},
-        widget=forms.EmailInput(attrs={'placeholder': 'ejemplo@correo.com'})
+        widget=forms.EmailInput(attrs={'placeholder': 'tu@email.com'})
     )
     password1 = forms.CharField(
         label=_('Contraseña'),
         strip=False,
         widget=forms.PasswordInput(attrs={
-            'placeholder': 'Mínimo 8 caracteres, incluye letras y números'
+            'placeholder': '••••••••'
         }),
         help_text=_('No debe parecerse a tu información personal.')
     )
     password2 = forms.CharField(
         label=_('Confirmar Contraseña'),
         strip=False,
-        widget=forms.PasswordInput(attrs={'placeholder': 'Repite la contraseña'})
+        widget=forms.PasswordInput(attrs={'placeholder': '••••••••'})
     )
 
     class Meta:

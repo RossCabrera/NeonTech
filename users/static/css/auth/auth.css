@@ -15,9 +15,7 @@ body {
 
 /* Neon Effects */
 .neon-glow {
-    color: #38bdf8;
     text-shadow: 0 0 8px #38b2f8, 0 0 12px #38b2f8;
-    font-weight: 700;
 }
 
 .neon-box {

@@ -28,11 +28,12 @@ def products_list(request, categoria):
     carrito_items = Carrito.objects.filter(usuario=request.user)
     articulos = carrito_items.aggregate(Sum('cantidad'))['cantidad__sum'] or 0
 
-    if categoria == 'laptop':
-        template = 'users/client_dashboard/search_laptops_page.html'
-    else:  # categoria == 'celular'
-        template = 'users/client_dashboard/search_phones_page.html'
-    return render(request, template, {'productos': productos, 'articulos': articulos})
+    # Usar una sola plantilla para ambas categorías
+    return render(request, 'users/client_dashboard/search_products_page.html', {
+        'productos': productos,
+        'articulos': articulos,
+        'categoria': categoria  # Pasar la categoría al template
+    })
 
 def show_detail_product(request, producto_id):
     """Mostrar los detalles del producto seleccionado"""
@@ -259,11 +260,11 @@ def register_address(request):
                     provincia=provincia,
                     codigo_postal=codigo_postal,
                 )
-                messages.success(request, '✅ Dirección guardada correctamente.')
+                messages.success(request, 'Dirección guardada correctamente.')
             else:
-                messages.error(request, '❌ Ya tienes una dirección registrada.')
+                messages.error(request, 'Ya tienes una dirección registrada.')
 
         else:
-            messages.error(request, '❌ Todos los campos son obligatorios.')
+            messages.error(request, 'Todos los campos son obligatorios.')
 
         return redirect('cart_payment_now')

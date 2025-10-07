@@ -17,15 +17,15 @@
 </head>
 
 <body class="text-gray-200 bg-gradient-to-br from-[#0a0a1a] via-[#0f0f2a] to-[#0a0a1a] min-h-screen flex flex-col">
-  
+
   <!-- Navbar -->
   <nav class="bg-gray-900/95 backdrop-blur-sm border-b border-sky-500/30 sticky top-0 z-50 shadow-lg shadow-sky-500/10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16">
         <div class="flex items-center">
           <a href="{% url 'client_dashboard' %}" class="flex-shrink-0 flex items-center group">
-            <img class="h-10 w-10 rounded-lg ring-2 ring-sky-500/50 group-hover:ring-sky-400 transition-all duration-300" 
-                 src="{% static 'img/logo.png' %}" alt="Logo">
+            <img class="h-10 w-10 rounded-lg group-hover:ring-sky-400 transition-all duration-300"
+              src="{% static 'img/logo.png' %}" alt="Logo">
             <span class="ml-3 text-xl font-bold text-white">NEON</span>
             <span class="text-xl font-bold text-sky-400 drop-shadow-[0_0_10px_rgba(56,178,248,0.8)]">TECH</span>
           </a>
@@ -39,11 +39,52 @@
       </div>
     </div>
   </nav>
+
   {% include '../partials/messages.html' %}
+
+  <!-- Modal de Pago Exitoso -->
+  {% if pago_exitoso %}
+  <div id="successModal"
+    class="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 animate-fadeIn">
+    <div
+      class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl border-2 border-green-500/50 shadow-2xl shadow-green-500/30 p-8 max-w-md w-full mx-4 animate-scaleIn">
+      <div class="text-center">
+        <div class="mb-6 relative">
+          <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto animate-pulse">
+            <i class="fas fa-check-circle text-6xl text-green-400"></i>
+          </div>
+        </div>
+
+        <h2 class="text-3xl font-bold text-white mb-3">¡Pago Exitoso!</h2>
+        <p class="text-gray-300 mb-2">Tu compra ha sido procesada correctamente</p>
+        <p class="text-sm text-gray-400 mb-6">Tu pedido está en proceso y será enviado pronto</p>
+
+        <div class="bg-gray-800/50 rounded-lg p-4 mb-6 border border-gray-700">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-gray-400 text-sm">Número de orden:</span>
+            <span class="text-sky-400 font-mono font-semibold">#{{ compra.id|default:"00000" }}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-gray-400 text-sm">Total pagado:</span>
+            <span class="text-white font-bold text-lg">${{ total|floatformat:2 }}</span>
+          </div>
+        </div>
+
+        <a href="{% url 'client_dashboard' %}" class="w-full py-4 bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 rounded-xl 
+                text-white font-bold text-lg shadow-lg shadow-sky-500/30 hover:shadow-sky-400/50 transition-all 
+                duration-300 hover:-translate-y-1 text-center inline-flex items-center justify-center">
+          <i class="fas fa-home mr-2"></i>
+          Volver al Inicio
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
   <!-- Main content -->
   <main class="flex-grow py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      
+
       <!-- Header con breadcrumb -->
       <div class="mb-12">
         <div class="flex items-center gap-2 text-sm text-gray-400 mb-6">
@@ -60,181 +101,346 @@
         <div class="w-24 h-1 bg-gradient-to-r from-sky-400 to-transparent mt-6"></div>
       </div>
 
-      <!-- Progress Steps -->
-      <div class="mb-12">
-        <div class="flex items-center justify-between max-w-2xl mx-auto">
-          <div class="flex flex-col items-center flex-1">
-            <div class="w-12 h-12 bg-green-500/20 border-2 border-green-500 rounded-full flex items-center justify-center mb-2">
-              <i class="fas fa-check text-green-400"></i>
-            </div>
-            <span class="text-xs text-gray-400">Carrito</span>
-          </div>
-          <div class="flex-1 h-1 bg-gradient-to-r from-green-500 to-sky-500 mx-2"></div>
-          <div class="flex flex-col items-center flex-1">
-            <div class="w-12 h-12 bg-sky-500/20 border-2 border-sky-500 rounded-full flex items-center justify-center mb-2 animate-pulse">
-              <i class="fas fa-credit-card text-sky-400"></i>
-            </div>
-            <span class="text-xs text-sky-400 font-semibold">Pago</span>
-          </div>
-          <div class="flex-1 h-1 bg-gray-700 mx-2"></div>
-          <div class="flex flex-col items-center flex-1">
-            <div class="w-12 h-12 bg-gray-800 border-2 border-gray-700 rounded-full flex items-center justify-center mb-2">
-              <i class="fas fa-check-circle text-gray-600"></i>
-            </div>
-            <span class="text-xs text-gray-400">Confirmación</span>
-          </div>
-        </div>
-      </div>
-
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        <!-- Columna de formularios (2/3) -->
+
         <div class="lg:col-span-2 space-y-6">
-          
-          <!-- Formulario de Tarjeta -->
-          <div class="group relative bg-gradient-to-br from-gray-900/95 to-gray-800/80 backdrop-blur-sm rounded-xl border border-gray-800 hover:border-sky-500/50 transition-all duration-300 overflow-hidden hover:shadow-[0_0_25px_rgba(56,178,248,0.3)]">
-            
-            <!-- Efecto de brillo -->
-            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-sky-400/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none"></div>
-            
+
+          <!-- Tarjeta Vinculada o Formulario -->
+          <div
+            class="group relative bg-gradient-to-br from-gray-900/95 to-gray-800/80 backdrop-blur-sm rounded-xl border border-gray-800 hover:border-sky-500/50 transition-all duration-300 overflow-hidden hover:shadow-[0_0_25px_rgba(56,178,248,0.3)]">
+
+            <div
+              class="absolute inset-0 bg-gradient-to-r from-transparent via-sky-400/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none">
+            </div>
+
             <div class="relative">
-              <!-- Header -->
-              <div class="bg-gray-800/50 border-b border-gray-700/50 px-6 py-4 flex items-center gap-3">
-                <i class="fas fa-credit-card text-sky-400 text-xl"></i>
-                <h2 class="text-white font-bold text-lg">Información de Tarjeta</h2>
+              <div class="bg-gray-800/50 border-b border-gray-700/50 px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <i class="fas fa-credit-card text-sky-400 text-xl"></i>
+                  <h2 class="text-white font-bold text-lg">Información de Tarjeta</h2>
+                </div>
+
+                {% if tiene_tarjeta %}
+
+                <span class="flex items-center gap-2 text-sm text-green-400">
+                  <i class="fas fa-check-circle"></i>
+                  <span>Vinculada</span>
+                </span>
+
+                {% endif %}
+
               </div>
 
-              <!-- Form -->
-              <form action="{% url 'link_card' %}" method="post" class="p-6 space-y-4" id="tarjetaForm">
+              {% if tiene_tarjeta %}
+
+              <!-- Mostrar tarjeta vinculada -->
+              <div class="p-6">
+                <div class="bg-gradient-to-r from-sky-600/20  border border-sky-500/30 rounded-lg p-6 mb-4">
+
+                  <div class="flex items-center justify-between mb-4">
+                    <!-- Nombre de la tarjeta y últimos números -->
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 bg-sky-500/20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-credit-card text-sky-400 text-xl"></i>
+                      </div>
+                      <div>
+                        <p class="text-white font-semibold">{{ tarjeta.nombre }}</p>
+                        <p class="text-gray-400 text-sm font-mono">**** **** **** {{ tarjeta.serial|slice:"-4:" }}</p>
+                      </div>
+                    </div>
+
+                    <!-- Saldo disponible -->
+                    <div class="text-right">
+                      <p class="text-gray-400 text-xs">Saldo disponible</p>
+                      <p class="text-green-400 font-bold text-lg">${{ tarjeta.saldo|floatformat:2 }}</p>
+                    </div>
+                  </div>
+
+                  <!-- Fecha de expiración -->
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-gray-400">Expira: {{ tarjeta.fecha_expiracion|date:"m/Y" }}</span>
+                  </div>
+                </div>
+
+                <!-- Desvincular Tarjeta Button -->
+                <form method="post" action="{% url 'unlink_card' %}" class="flex gap-3">
+                  {% csrf_token %}
+                  <button type="submit"
+                    class="flex-1 py-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-red-500/50 rounded-lg text-gray-300 hover:text-red-400 font-medium transition-all duration-300">
+                    <i class="fas fa-unlink mr-2"></i>
+                    Desvincular y Cambiar
+                  </button>
+                </form>
+
+              </div>
+
+              {% else %}
+
+              <!-- Formulario para vincular tarjeta -->
+              <form action="{% url 'link_card' %}" method="post" class="p-6 space-y-4">
                 {% csrf_token %}
-                
+
+                <!-- Numero de la tarjeta -->
                 <div>
                   <label class="block text-sm font-medium text-gray-300 mb-2">
                     <i class="fas fa-hashtag text-sky-400 mr-2"></i>
                     Número de Tarjeta
                   </label>
-                  <input 
-                    name="serial" 
-                    type="text" 
-                    maxlength="19" 
-                    placeholder="XXXX-XXXX-XXXX-XXXX"
-                    pattern="\d{4}-\d{4}-\d{4}-\d{4}" 
-                    title="Formato: XXXX-XXXX-XXXX-XXXX"
-                    class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all duration-300" 
-                    oninput="formatearTarjeta(this)"
-                    required 
-                  />
+
+                  <input name="serial" type="text" maxlength="19" placeholder="XXXX-XXXX-XXXX-XXXX"
+                    pattern="\d{4}-\d{4}-\d{4}-\d{4}" title="Formato: XXXX-XXXX-XXXX-XXXX"
+                    class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all duration-300"
+                    oninput="formatearTarjeta(this)" required />
                 </div>
 
+                <!-- CVV -->
                 <div class="grid grid-cols-2 gap-4">
                   <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                       <i class="fas fa-lock text-sky-400 mr-2"></i>
                       CVV
                     </label>
-                    <input 
-                      name="cvv" 
-                      type="text" 
-                      placeholder="123" 
-                      pattern="\d{3,4}" 
-                      maxlength="4" 
-                      title="Solo números"
-                      class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all duration-300" 
-                      required 
-                    />
+                    <input name="cvv" type="text" placeholder="123" pattern="\d{3,4}" maxlength="4" title="Solo números"
+                      class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all duration-300"
+                      required />
                   </div>
 
+                  <!-- Fecha de expiración -->
                   <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                       <i class="fas fa-calendar text-sky-400 mr-2"></i>
                       Fecha Exp.
                     </label>
-                    <input 
-                      name="fecha" 
-                      type="text" 
-                      placeholder="MM/YYYY" 
-                      id="fecha-exp"
-                      class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all duration-300" 
-                      required 
-                    />
+                    <input name="fecha" type="text" placeholder="MM/YYYY" id="fecha-exp"
+                      class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all duration-300"
+                      required />
                   </div>
                 </div>
 
-                <button 
-                  type="submit" 
-                  class="w-full py-4 bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 rounded-lg flex items-center justify-center text-white font-bold text-base shadow-lg shadow-sky-500/30 hover:shadow-sky-400/50 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 active:translate-y-0 group/btn overflow-hidden relative"
-                >
+                <!-- Vincular tarjeta Button -->
+                <button type="submit"
+                  class="w-full py-4 bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 rounded-lg flex items-center justify-center text-white font-bold text-base shadow-lg shadow-sky-500/30 hover:shadow-sky-400/50 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 active:translate-y-0 group/btn overflow-hidden relative">
                   <span class="relative z-10 flex items-center gap-2">
                     <i class="fas fa-link"></i>
                     <span>Vincular Tarjeta</span>
                   </span>
-                  <div class="absolute inset-0 bg-white/20 scale-0 group-hover/btn:scale-100 transition-transform duration-500 rounded-full"></div>
+
+                  <div
+                    class="absolute inset-0 bg-white/20 scale-0 group-hover/btn:scale-100 transition-transform duration-500 rounded-full">
+                  </div>
                 </button>
+
               </form>
 
-              
+              {% endif %}
+
             </div>
           </div>
 
-          <!-- Formulario de Dirección -->
-          <div class="group relative bg-gradient-to-br from-gray-900/95 to-gray-800/80 backdrop-blur-sm rounded-xl border border-gray-800 hover:border-sky-500/50 transition-all duration-300 overflow-hidden hover:shadow-[0_0_25px_rgba(56,178,248,0.3)]">
-            
-            <!-- Efecto de brillo -->
-            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-sky-400/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none"></div>
-            
+          <!-- Dirección Guardada o Formulario -->
+          <div
+            class="group relative bg-gradient-to-br from-gray-900/95 to-gray-800/80 backdrop-blur-sm rounded-xl border border-gray-800 hover:border-sky-500/50 transition-all duration-300 overflow-hidden hover:shadow-[0_0_25px_rgba(56,178,248,0.3)]">
+
+            <div
+              class="absolute inset-0 bg-gradient-to-r from-transparent via-sky-400/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none">
+            </div>
+
             <div class="relative">
-              <!-- Header -->
-              <div class="bg-gray-800/50 border-b border-gray-700/50 px-6 py-4 flex items-center gap-3">
-                <i class="fas fa-map-marker-alt text-sky-400 text-xl"></i>
-                <h2 class="text-white font-bold text-lg">Dirección de Envío</h2>
+              <div class="bg-gray-800/50 border-b border-gray-700/50 px-6 py-4 flex items-center justify-between">
+
+                <div class="flex items-center gap-3">
+                  <i class="fas fa-map-marker-alt text-sky-400 text-xl"></i>
+                  <h2 class="text-white font-bold text-lg">Dirección de Envío</h2>
+                </div>
+
+                {% if tiene_direccion %}
+
+                <span class="flex items-center gap-2 text-sm text-green-400">
+                  <i class="fas fa-check-circle"></i>
+                  <span>Registrada</span>
+                </span>
+
+                {% endif %}
+
               </div>
 
-              <!-- Form -->
+              {% if tiene_direccion %}
+
+              <!-- Mostrar dirección guardada -->
+              <div class="p-6">
+                <div class="bg-gradient-to-r from-sky-600/20 border border-sky-500/30 rounded-lg p-6 mb-4">
+                  <div class="space-y-3">
+
+                    <!-- Calle -->
+                    <div class="flex items-start gap-3">
+                      <i class="fas fa-road text-sky-400 mt-1"></i>
+                      <div>
+                        <p class="text-gray-400 text-xs">Calle</p>
+                        <p class="text-white">{{ direccion.calle }}</p>
+                      </div>
+                    </div>
+
+                    <!-- ciudad y Provincia -->
+                    <div class="grid grid-cols-2 gap-4">
+
+                      <div class="flex items-start gap-3">
+                        <i class="fas fa-city text-sky-400 mt-1"></i>
+                        <div>
+                          <p class="text-gray-400 text-xs">Ciudad</p>
+                          <p class="text-white">{{ direccion.ciudad }}</p>
+                        </div>
+                      </div>
+
+                      <div class="flex items-start gap-3">
+                        <i class="fas fa-map text-sky-400 mt-1"></i>
+                        <div>
+                          <p class="text-gray-400 text-xs">Provincia</p>
+                          <p class="text-white">{{ direccion.provincia }}</p>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <!-- Código Posta y Teléfono -->
+                    <div class="grid grid-cols-2 gap-4">
+
+                      <div class="flex items-start gap-3">
+                        <i class="fas fa-location-dot text-sky-400 mt-1"></i>
+                        <div>
+                          <p class="text-gray-400 text-xs">Código Postal</p>
+                          <p class="text-white">{{ direccion.codigo_postal }}</p>
+                        </div>
+                      </div>
+
+                      <div class="flex items-start gap-3">
+                        <i class="fas fa-phone text-sky-400 mt-1"></i>
+                        <div>
+                          <p class="text-gray-400 text-xs">Teléfono</p>
+                          <p class="text-white">{{ direccion.telefono }}</p>
+                        </div>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+                <!-- Editar dirección Button -->
+                <button id="btn-toggle-direccion"
+                  class="w-full py-3 bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-sky-500/50 rounded-lg text-gray-300 hover:text-sky-400 font-medium transition-all duration-300">
+                  <i class="fas fa-edit mr-2"></i>
+                  Editar Dirección
+                </button>
+
+                <!-- Formulario de edición (oculto por defecto) -->
+                <form method="POST" action="{% url 'update_address' %}" class="mt-4 space-y-4 hidden"
+                  id="formEditarDireccion">
+                  {% csrf_token %}
+
+                  <!-- Calle -->
+                  <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">
+                      <i class="fas fa-road text-sky-400 mr-2"></i>
+                      Calle
+                    </label>
+                    <input type="text" name="calle" placeholder="Av. Principal, Edificio 123"
+                      class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all duration-300"
+                      required />
+                  </div>
+
+                  <!-- Ciudad y Provincia -->
+                  <div class="grid grid-cols-2 gap-4">
+
+                    <div>
+                      <label class="block text-sm font-medium text-gray-300 mb-2">
+                        <i class="fas fa-city text-sky-400 mr-2"></i>
+                        Ciudad
+                      </label>
+                      <input type="text" name="ciudad" placeholder="Ciudad de Panamá"
+                        class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all duration-300"
+                        required />
+                    </div>
+
+                    <div>
+                      <label class="block text-sm font-medium text-gray-300 mb-2">
+                        <i class="fas fa-map text-sky-400 mt-1"></i>
+                        Provincia
+                      </label>
+                      <input type="text" name="provincia" placeholder="Panamá"
+                        class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all duration-300"
+                        required />
+                    </div>
+
+                  </div>
+
+                  <!-- Código Postal y Teléfono -->
+                  <div class="grid grid-cols-2 gap-4">
+
+                    <div>
+                      <label class="block text-sm font-medium text-gray-300 mb-2">
+                        <i class="fas fa-location-dot text-sky-400 mr-2"></i>
+                        Código Postal
+                      </label>
+                      <input type="text" name="codigo_postal" placeholder="00000"
+                        class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all duration-300"
+                        required />
+                    </div>
+
+                    <div>
+                      <label class="block text-sm font-medium text-gray-300 mb-2">
+                        <i class="fas fa-phone text-sky-400 mr-2"></i>
+                        Teléfono
+                      </label>
+                      <input type="tel" name="telefono" placeholder="12345678" pattern="[0-9]{7,15}"
+                        class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all duration-300"
+                        required />
+                    </div>
+
+                  </div>
+
+                  <!-- Guardar dirección Button -->
+                  <button type="submit"
+                    class="w-full py-4 bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 rounded-lg flex items-center justify-center text-white font-bold text-base shadow-lg shadow-sky-500/30 hover:shadow-sky-400/50 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 active:translate-y-0 group/btn overflow-hidden relative">
+                    <span class="relative z-10 flex items-center gap-2">
+                      <i class="fas fa-save"></i>
+                      <span>Guardar Dirección</span>
+                    </span>
+                    <div
+                      class="absolute inset-0 bg-white/20 scale-0 group-hover/btn:scale-100 transition-transform duration-500 rounded-full">
+                    </div>
+                  </button>
+
+                </form>
+              </div>
+
+              {% else %}
+
+              <!-- Formulario para registrar dirección -->
               <form method="POST" action="{% url 'save_address' %}" class="p-6 space-y-4">
                 {% csrf_token %}
-                
+
+                <!-- Calle: Se mantiene sola -->
                 <div>
                   <label class="block text-sm font-medium text-gray-300 mb-2">
                     <i class="fas fa-road text-sky-400 mr-2"></i>
                     Calle
                   </label>
-                  <input 
-                    type="text" 
-                    name="calle" 
-                    placeholder="Av. Principal, Edificio 123"
+                  <input type="text" name="calle" placeholder="Av. Principal, Edificio 123"
                     class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all duration-300"
-                    required
-                  />
+                    required />
                 </div>
 
-                <div>
-                  <label class="block text-sm font-medium text-gray-300 mb-2">
-                    <i class="fas fa-phone text-sky-400 mr-2"></i>
-                    Número de Teléfono
-                  </label>
-                  <input 
-                    type="tel" 
-                    name="telefono" 
-                    placeholder="12345678" 
-                    pattern="[0-9]{7,15}"
-                    class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all duration-300"
-                    required
-                  />
-                </div>
-
+                <!-- Ciudad y Provincia: -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label class="block text-sm font-medium text-gray-300 mb-2">
                       <i class="fas fa-city text-sky-400 mr-2"></i>
                       Ciudad
                     </label>
-                    <input 
-                      type="text" 
-                      name="ciudad" 
-                      placeholder="Ciudad de Panamá"
+                    <input type="text" name="ciudad" placeholder="Ciudad de Panamá"
                       class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all duration-300"
-                      required
-                    />
+                      required />
                   </div>
 
                   <div>
@@ -242,57 +448,70 @@
                       <i class="fas fa-map text-sky-400 mr-2"></i>
                       Provincia
                     </label>
-                    <input 
-                      type="text" 
-                      name="provincia" 
-                      placeholder="Panamá"
+                    <input type="text" name="provincia" placeholder="Panamá"
                       class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all duration-300"
-                      required
-                    />
+                      required />
                   </div>
                 </div>
 
-                <div>
-                  <label class="block text-sm font-medium text-gray-300 mb-2">
-                    <i class="fas fa-mailbox text-sky-400 mr-2"></i>
-                    Código Postal
-                  </label>
-                  <input 
-                    type="text" 
-                    name="codigo_postal" 
-                    placeholder="00000"
-                    class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all duration-300"
-                    required
-                  />
+                <!-- Código Postal y Número de Teléfono -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+
+                    <label class="block text-sm font-medium text-gray-300 mb-2">
+                      <i class="fas fa-location-dot text-sky-400 mr-2"></i>
+                      Código Postal
+                    </label>
+                    <input type="text" name="codigo_postal" placeholder="00000"
+                      class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all duration-300"
+                      required />
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-2">
+                      <i class="fas fa-phone text-sky-400 mr-2"></i>
+                      Número de Teléfono
+                    </label>
+                    <input type="tel" name="telefono" placeholder="12345678" pattern="[0-9]{7,15}"
+                      class="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 transition-all duration-300"
+                      required />
+                  </div>
+
                 </div>
 
-                <button 
-                  type="submit" 
-                  class="w-full py-4 bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 rounded-lg flex items-center justify-center text-white font-bold text-base shadow-lg shadow-sky-500/30 hover:shadow-sky-400/50 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 active:translate-y-0 group/btn overflow-hidden relative"
-                >
+                <!-- Guardar dirección button -->
+                <button type="submit"
+                  class="w-full py-4 bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 rounded-lg flex items-center justify-center text-white font-bold text-base shadow-lg shadow-sky-500/30 hover:shadow-sky-400/50 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 active:translate-y-0 group/btn overflow-hidden relative">
                   <span class="relative z-10 flex items-center gap-2">
                     <i class="fas fa-save"></i>
                     <span>Guardar Dirección</span>
                   </span>
-                  <div class="absolute inset-0 bg-white/20 scale-0 group-hover/btn:scale-100 transition-transform duration-500 rounded-full"></div>
+                  <div
+                    class="absolute inset-0 bg-white/20 scale-0 group-hover/btn:scale-100 transition-transform duration-500 rounded-full">
+                  </div>
                 </button>
+
               </form>
 
-              
+              {% endif %}
+
             </div>
+
           </div>
+
         </div>
 
-        <!-- Columna de resumen (1/3) -->
         <div class="lg:col-span-1">
           <div class="sticky top-24 space-y-6">
-            
+
             <!-- Resumen de compra -->
-            <div class="relative bg-gradient-to-br from-gray-900/95 to-gray-800/90 backdrop-blur-sm rounded-2xl border border-sky-500/30 overflow-hidden shadow-2xl hover:shadow-[0_0_40px_rgba(56,178,248,0.3)] transition-all duration-500">
-              
-              <!-- Efecto de borde animado -->
+            <div
+              class="relative bg-gradient-to-br from-gray-900/95 to-gray-800/90 backdrop-blur-sm rounded-2xl border border-sky-500/30 overflow-hidden shadow-2xl hover:shadow-[0_0_40px_rgba(56,178,248,0.3)] transition-all duration-500">
+
               <div class="absolute inset-0 rounded-2xl opacity-50">
-                <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-sky-400/20 to-transparent blur-sm"></div>
+                <div
+                  class="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-sky-400/20 to-transparent blur-sm">
+                </div>
               </div>
 
               <div class="relative p-6">
@@ -315,12 +534,29 @@
                     <dd class="font-semibold text-white text-lg">{{articulos}}</dd>
                   </div>
 
-                  <div class="flex items-center justify-between py-4 bg-gradient-to-r from-sky-500/10 to-transparent rounded-lg px-4">
+                  <div class="flex items-center justify-between py-2 border-b border-gray-700/50">
+                    <dt class="text-gray-300">Subtotal</dt>
+                    <dd class="font-semibold text-white">${{subtotal|floatformat:2}}</dd>
+                  </div>
+
+                  <div class="flex items-center justify-between py-2 border-b border-gray-700/50">
+                    <dt class="text-gray-300">ITBMS (7%)</dt>
+                    <dd class="font-semibold text-white">${{impuesto|floatformat:2}}</dd>
+                  </div>
+
+                  <div class="flex items-center justify-between py-2 border-b border-gray-700/50">
+                    <dt class="text-gray-300">Envío</dt>
+                    <dd class="font-semibold text-green-400">GRATIS</dd>
+                  </div>
+
+                  <div
+                    class="flex items-center justify-between py-4 bg-gradient-to-r from-sky-500/10 to-transparent rounded-lg px-4">
                     <dt class="text-xl font-bold text-white flex items-center gap-2">
                       <i class="fas fa-dollar-sign text-sky-400"></i>
                       Total
                     </dt>
-                    <dd class="text-3xl font-bold bg-gradient-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
+                    <dd
+                      class="text-3xl font-bold bg-gradient-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
                       ${{total|floatformat:2}}
                     </dd>
                   </div>
@@ -350,22 +586,39 @@
             <div class="space-y-3">
               <form method="post" action="{% url 'process_payment' %}">
                 {% csrf_token %}
-                <button 
-                  type="submit" 
-                  class="w-full py-4 bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-green-500/30 hover:shadow-green-400/50 hover:shadow-2xl transition-all duration-300 overflow-hidden group/btn hover:-translate-y-1 active:translate-y-0"
-                >
+                <button type="submit" {% if not tiene_tarjeta or not tiene_direccion %}disabled{% endif %}
+                  class="w-full py-4 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg transition-all duration-300 overflow-hidden group/btn hover:-translate-y-1 active:translate-y-0 {% if tiene_tarjeta and tiene_direccion %}bg-gradient-to-r from-green-600 to-green-500 hover:from-green-500 hover:to-green-400 shadow-green-500/30 hover:shadow-green-400/50 hover:shadow-2xl{% else %}bg-gray-700 cursor-not-allowed opacity-50{% endif %}">
                   <span class="relative z-10 flex items-center gap-3">
                     <i class="fas fa-check-circle text-xl"></i>
                     <span>Pagar Ahora</span>
                   </span>
-                  <div class="absolute inset-0 bg-white/20 scale-0 group-hover/btn:scale-100 transition-transform duration-500 rounded-full"></div>
+                  {% if tiene_tarjeta and tiene_direccion %}
+                  <div
+                    class="absolute inset-0 bg-white/20 scale-0 group-hover/btn:scale-100 transition-transform duration-500 rounded-full">
+                  </div>
+                  {% endif %}
                 </button>
               </form>
 
-              <a 
-                href="{% url 'shopping_cart' %}"
-                class="block w-full py-3 text-center text-gray-300 hover:text-sky-400 font-medium transition-colors duration-300 border border-gray-700 hover:border-sky-500/50 rounded-lg"
-              >
+              {% if not tiene_tarjeta or not tiene_direccion %}
+              <div class="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3">
+                <p class="text-yellow-400 text-sm flex items-start gap-2">
+                  <i class="fas fa-exclamation-triangle mt-0.5"></i>
+                  <span>
+                    {% if not tiene_tarjeta and not tiene_direccion %}
+                    Completa los formularios de tarjeta y dirección para continuar
+                    {% elif not tiene_tarjeta %}
+                    Vincula una tarjeta para continuar
+                    {% else %}
+                    Registra una dirección de envío para continuar
+                    {% endif %}
+                  </span>
+                </p>
+              </div>
+              {% endif %}
+
+              <a href="{% url 'shopping_cart' %}"
+                class="block w-full py-3 text-center text-gray-300 hover:text-sky-400 font-medium transition-colors duration-300 border border-gray-700 hover:border-sky-500/50 rounded-lg">
                 <i class="fas fa-arrow-left mr-2"></i>
                 Regresar al Carrito
               </a>
@@ -392,6 +645,7 @@
   </footer>
 
   <script src="{% static 'js/client/script.js' %}"></script>
+
 </body>
 
 </html>

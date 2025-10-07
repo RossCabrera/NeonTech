@@ -136,29 +136,48 @@ def cart_payment(request):
     total = subtotal + impuesto
 
     articulos = sum(item.cantidad for item in carrito)
+    
+    # Verificar si el usuario tiene tarjeta y dirección
+    tiene_tarjeta = Tarjeta.objects.filter(usuario=request.user).exists()
+    tiene_direccion = hasattr(request.user, 'direccion')
+    
+    # Obtener datos si existen
+    tarjeta = Tarjeta.objects.filter(usuario=request.user).first() if tiene_tarjeta else None
+    direccion = request.user.direccion if tiene_direccion else None
 
     return render(request, 'users/client_dashboard/shopping_cart_payment.html', {
         'articulos': articulos,
         'total': total,
+        'subtotal': subtotal,
+        'impuesto': impuesto,
+        'tiene_tarjeta': tiene_tarjeta,
+        'tiene_direccion': tiene_direccion,
+        'tarjeta': tarjeta,
+        'direccion': direccion,
     })
 
 def link_card(request):
     """Vincular tarjeta al usuario"""
-    msg = "Verifique que sus crendenciales sean correctas."
+    msg = "Verifique que sus credenciales sean correctas."
     if request.method == "POST":
         serial_input = request.POST.get('serial')
         cvv_input = request.POST.get('cvv')
-        fecha_input = request.POST.get('fecha')  # Esperando formato: YYYY-MM-DD
+        fecha_input = request.POST.get('fecha')
+        
         tarjeta = Tarjeta.objects.filter(serial=serial_input).first()
         if tarjeta is None:
             messages.error(request, msg)
+            return redirect('cart_payment_now')
+
+        # Verificar si la tarjeta ya está asociada a otro usuario
+        if tarjeta.usuario is not None and tarjeta.usuario != request.user:
+            messages.error(request, "Esta tarjeta ya está asociada a otro usuario.")
             return redirect('cart_payment_now')
 
         if tarjeta.cvv != cvv_input:
             messages.error(request, msg)
             return redirect('cart_payment_now')
 
-        # Procesar la fecha ingresada desde el input (esperamos: YYYY-MM-DD)
         try:
             fecha_ingresada = datetime.strptime(fecha_input, "%Y-%m-%d").date()
             mes_input = fecha_ingresada.month
@@ -167,26 +186,63 @@ def link_card(request):
             messages.error(request, msg)
             return redirect('cart_payment_now')
 
-        # Verificar si la tarjeta ha expirado
         hoy = now().date()
         if anio_input < hoy.year or (anio_input == hoy.year and mes_input < hoy.month):
-            messages.error(request, msg)
+            messages.error(request, "La tarjeta está expirada.")
             return redirect('cart_payment_now')
 
-        # Comparar con la fecha de la tarjeta registrada (solo mes y año)
         mes_real = tarjeta.fecha_expiracion.month
         anio_real = tarjeta.fecha_expiracion.year
         if (mes_input != mes_real) or (anio_input != anio_real):
             messages.error(request, msg)
             return redirect('cart_payment_now')
 
-        # Asociar la tarjeta al usuario
         tarjeta.usuario = request.user
         tarjeta.save()
-        messages.success(request, "¡Tarjeta asociada correctamente! Ahora puedes proceder con tu compra.")
+        messages.success(request, "¡Tarjeta vinculada correctamente!")
         return redirect('cart_payment_now')
 
     return render(request, 'users/client_dashboard/shopping_cart.html')
+
+@login_required
+def unlink_card(request):
+    """Desvincular tarjeta del usuario"""
+    if request.method == "POST":
+        try:
+            tarjeta = Tarjeta.objects.get(usuario=request.user)
+            tarjeta.usuario = None
+            tarjeta.save()
+            messages.success(request, "Tarjeta desvinculada correctamente.")
+        except Tarjeta.DoesNotExist:
+            messages.error(request, "No tienes una tarjeta vinculada.")
+    return redirect('cart_payment_now')
+
+@login_required
+def update_address(request):
+    """Actualizar dirección existente"""
+    if request.method == 'POST':
+        calle = request.POST.get('calle')
+        telefono = request.POST.get('telefono')
+        ciudad = request.POST.get('ciudad')
+        provincia = request.POST.get('provincia')
+        codigo_postal = request.POST.get('codigo_postal')
+
+        if all([calle, telefono, ciudad, provincia, codigo_postal]):
+            try:
+                direccion = request.user.direccion
+                direccion.calle = calle
+                direccion.telefono = telefono
+                direccion.ciudad = ciudad
+                direccion.provincia = provincia
+                direccion.codigo_postal = codigo_postal
+                direccion.save()
+                messages.success(request, 'Dirección actualizada correctamente.')
+            except Direccion.DoesNotExist:
+                messages.error(request, 'No tienes una dirección registrada.')
+        else:
+            messages.error(request, 'Todos los campos son obligatorios.')
+    
+    return redirect('cart_payment_now')
 
 @login_required
 def process_payment(request):
@@ -199,16 +255,18 @@ def process_payment(request):
         messages.error(request, "Necesitas vincular una tarjeta antes de pagar.")
         return redirect('cart_payment_now')
 
+    if not hasattr(usuario, 'direccion'):
+        messages.error(request, "Necesitas registrar una dirección de envío.")
+        return redirect('cart_payment_now')
+
     carrito_items = Carrito.objects.filter(usuario=usuario)
     if not carrito_items.exists():
         messages.error(request, "Tu carrito está vacío.")
         return redirect('cart_payment_now')
 
-    # Asegura que el total sea Decimal, no float
     total = sum(item.subtotal * (1 + ITBMS_RATE) for item in carrito_items)
-    total = total.quantize(Decimal('0.01'))  # Redondea a 2 decimales
+    total = total.quantize(Decimal('0.01'))
 
-    # Verificar si el saldo es suficiente
     if tarjeta.saldo < total:
         messages.error(request, "Saldo insuficiente en tu tarjeta. Elimina productos del carrito.")
         return redirect('cart_payment_now')
@@ -229,17 +287,19 @@ def process_payment(request):
         item.producto.stock -= item.cantidad
         item.producto.save()
 
-    # Descontar usando Decimal para evitar errores
     tarjeta.saldo = tarjeta.saldo - total
     tarjeta.save()
 
     carrito_items.delete()
 
-    return redirect('successful_purchase')
-
-def success_purchase(request):
-    """Mostrar notificación de compra exitosa"""
-    return render(request, 'users/client_dashboard/successful_purchase.html')
+    # En lugar de redirigir, renderizamos la misma página con un indicador de éxito
+    return render(request, 'users/client_dashboard/shopping_cart_payment.html', {
+        'pago_exitoso': True,
+        'tiene_tarjeta': True,
+        'tiene_direccion': True,
+        'total': total,
+        'compra': compra  # Añade la compra para obtener el ID
+    })
 
 def register_address(request):
     """Guardar dirección de envío"""
@@ -251,9 +311,9 @@ def register_address(request):
         codigo_postal = request.POST.get('codigo_postal')
 
         if all([calle, telefono, ciudad, provincia, codigo_postal]):
-            if not hasattr(request.user, 'direccion'):  # Verificar si ya tiene dirección
+            if not hasattr(request.user, 'direccion'):
                 Direccion.objects.create(
-                    usuario=request.user,  # Añadido el usuario
+                    usuario=request.user,
                     calle=calle,
                     telefono=telefono,
                     ciudad=ciudad,
@@ -262,8 +322,7 @@ def register_address(request):
                 )
                 messages.success(request, 'Dirección guardada correctamente.')
             else:
-                messages.error(request, 'Ya tienes una dirección registrada.')
-
+                messages.info(request, 'Ya tienes una dirección registrada. Puedes editarla si lo deseas.')
         else:
             messages.error(request, 'Todos los campos son obligatorios.')
 

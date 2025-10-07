@@ -30,9 +30,8 @@ urlpatterns = [
     path('cart-payment/link-card', views.link_card, name='link_card'),
     path('cart-payment/save-address', views.register_address, name='save_address'),
     path('process-payment/', views.process_payment, name='process_payment'),
-
-    # Confirmación de compra exitosa
-    path('successful-purchase/', views.success_purchase, name='successful_purchase'),
+    path('cart-payment/unlink-card/', views.unlink_card, name='unlink_card'),
+    path('cart-payment/update-address/', views.update_address, name='update_address'),
 
 
     # """URLS del Admin"""

@@ -50,3 +50,17 @@ function formatearTarjeta(input) {
   let formateado = valor.match(/.{1,4}/g)?.join('-') || '';
   input.value = formateado;
 }
+
+// Mostrar u ocultar formulario de editar direccion
+function toggleEditarDireccion() {
+    const form = document.getElementById('formEditarDireccion');
+    form.classList.toggle('hidden');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const editButton = document.getElementById('btn-toggle-direccion');
+    
+    if (editButton) {
+        editButton.addEventListener('click', toggleEditarDireccion);
+    }
+});

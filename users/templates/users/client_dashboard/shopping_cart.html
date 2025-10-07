@@ -9,65 +9,99 @@
     <title>Carrito de Compras - NeonTech</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/client/shopping_cart.css' %}">
-
+    <link rel="stylesheet" href="{% static 'css/client/style.css' %}">
 </head>
 
-<body class="text-gray-200">
+<body class="text-gray-200 bg-gradient-to-br from-[#0a0a1a] via-[#0f0f2a] to-[#0a0a1a] min-h-screen flex flex-col">
+    
     <!-- Navbar -->
     {% include './partials/header.html' %}
+    
     <!-- Main content -->
-    <main class="flex-grow py-10">
+    <main class="flex-grow py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h1 class="text-4xl font-bold text-white mb-8">Tu Carrito</h1>
+            
+            <!-- Header con breadcrumb -->
+            <div class="mb-12">
+                <div class="flex items-center gap-2 text-sm text-gray-400 mb-6">
+                    <a href="/" class="hover:text-sky-400 transition-colors">Inicio</a>
+                    <i class="fas fa-chevron-right text-xs"></i>
+                    <span class="text-sky-400">Carrito de Compras</span>
+                </div>
+                <h1 class="text-5xl font-bold text-white drop-shadow-[0_0_15px_rgba(56,178,248,0.5)]">
+                    <i class="fas fa-shopping-cart text-sky-400 mr-3"></i>
+                    Tu Carrito
+                </h1>
+                <div class="w-24 h-1 bg-gradient-to-r from-sky-400 to-transparent mt-6"></div>
+            </div>
 
-            <div class="lg:grid lg:grid-cols-2 lg:gap-8"> <!-- Cambio aquí para tener dos columnas -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-                <!-- Columna de productos -->
-                <div>
+                <!-- Columna de productos (2/3) -->
+                <div class="lg:col-span-2 space-y-4">
                     {% for item in carrito %}
-                    <div class="flex items-center py-5 border-b border-gray-700">
-                        <div
-                            class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-700 bg-gray-800">
-                            <img src="{{ item.producto.img.url }}" alt="{{ item.producto.name }}"
-                                class="h-full w-full object-cover object-center product-img">
-                        </div>
-
-                        <div class="ml-4 flex flex-1 flex-col">
-                            <div>
-                                <div class="flex justify-between">
-                                    <h3 class="text-lg font-medium text-white">
-                                        {{ item.producto.name }}
-                                    </h3>
-                                    <p class="ml-4 text-lg font-medium text-sky-400">${{ item.subtotal }}</p>
+                    <div class="group relative bg-gradient-to-br from-gray-900/95 to-gray-800/80 backdrop-blur-sm rounded-xl border border-gray-800 hover:border-sky-500/50 transition-all duration-300 overflow-hidden hover:shadow-[0_0_25px_rgba(56,178,248,0.3)]">
+                        
+                        <!-- Efecto de brillo -->
+                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-sky-400/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none"></div>
+                        
+                        <div class="relative p-6 flex flex-col sm:flex-row gap-6">
+                            
+                            <!-- Imagen del producto -->
+                            <div class="relative flex-shrink-0">
+                                <div class="h-32 w-32 overflow-hidden rounded-xl border-2 border-gray-700 group-hover:border-sky-500/50 bg-gradient-to-br from-gray-800 to-gray-900 transition-all duration-300">
+                                    <img src="{{ item.producto.img.url }}" alt="{{ item.producto.name }}"
+                                        class="h-full w-full object-contain transition-transform duration-500 group-hover:scale-110">
                                 </div>
-                                <p class="mt-1 text-sm text-gray-400">
-                                    {{ item.producto.description|truncatewords:10 }}
-                                </p>
+                                <!-- Badge de cantidad en la esquina -->
+                                <div class="absolute -top-2 -right-2 w-8 h-8 bg-gradient-to-r from-sky-600 to-sky-500 rounded-full flex items-center justify-center border-2 border-gray-900 shadow-lg">
+                                    <span class="text-white text-xs font-bold">{{ item.cantidad }}</span>
+                                </div>
                             </div>
 
-                            <div class="flex flex-1 items-end justify-between mt-4">
-                                <div class="flex items-center border border-gray-700 rounded-md">
-                                    <form action="{% url 'update_cart' item.producto.id %}" method="POST" class="flex">
-                                        {% csrf_token %}
-                                        <button type="submit" name="action" value="decrease"
-                                            class="px-3 py-1 text-gray-400 hover:text-white bg-gray-800 rounded-l-md">
-                                            <i class="fas fa-minus"></i>
-                                        </button>
-                                        <input readonly name="cantidad" value="{{ item.cantidad }}"
-                                            class="w-12 text-center bg-gray-800 text-white border-0 focus:ring-0" />
-                                        <button type="submit" name="action" value="increase"
-                                            class="px-3 py-1 text-gray-400 hover:text-white bg-gray-800 rounded-r-md">
-                                            <i class="fas fa-plus"></i>
-                                        </button>
-                                    </form>
+                            <!-- Info del producto -->
+                            <div class="flex-1 flex flex-col justify-between min-w-0">
+                                <div>
+                                    <div class="flex justify-between items-start gap-4 mb-2">
+                                        <h3 class="text-xl font-semibold text-white group-hover:text-sky-400 transition-colors duration-300 line-clamp-2">
+                                            {{ item.producto.name }}
+                                        </h3>
+                                        <p class="text-2xl font-bold bg-gradient-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent flex-shrink-0">
+                                            ${{ item.subtotal }}
+                                        </p>
+                                    </div>
+                                    <p class="text-sm text-gray-400 line-clamp-2 mb-4">
+                                        {{ item.producto.description|truncatewords:15 }}
+                                    </p>
                                 </div>
 
-                                <div class="flex">
+                                <!-- Controles -->
+                                <div class="flex flex-wrap items-center justify-between gap-4">
+                                    
+                                    <!-- Selector de cantidad -->
+                                    <form action="{% url 'update_cart' item.producto.id %}" method="POST" class="flex items-center">
+                                        {% csrf_token %}
+                                        <div class="flex items-center bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg overflow-hidden hover:border-sky-500/50 transition-all duration-300">
+                                            <button type="submit" name="action" value="decrease"
+                                                class="px-4 py-2 text-gray-400 hover:text-white hover:bg-sky-600/20 transition-all duration-300">
+                                                <i class="fas fa-minus text-sm"></i>
+                                            </button>
+                                            <input readonly name="cantidad" value="{{ item.cantidad }}"
+                                                class="w-14 text-center bg-transparent text-white font-bold border-0 focus:ring-0" />
+                                            <button type="submit" name="action" value="increase"
+                                                class="px-4 py-2 text-gray-400 hover:text-white hover:bg-sky-600/20 transition-all duration-300">
+                                                <i class="fas fa-plus text-sm"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+
+                                    <!-- Botón eliminar -->
                                     <form action="{% url 'remove_from_cart' item.producto.id %}" method="POST">
                                         {% csrf_token %}
-                                        <button type="submit" class="text-gray-400 hover:text-red-500">
-                                            <i class="fas fa-trash-alt"></i>
+                                        <button type="submit" 
+                                            class="group/delete flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 hover:border-red-500/50 rounded-lg text-red-400 hover:text-red-300 transition-all duration-300 hover:shadow-[0_0_15px_rgba(239,68,68,0.3)]">
+                                            <i class="fas fa-trash-alt text-sm group-hover/delete:scale-110 transition-transform duration-300"></i>
+                                            <span class="text-sm font-medium hidden sm:inline">Eliminar</span>
                                         </button>
                                     </form>
                                 </div>
@@ -75,50 +109,120 @@
                         </div>
                     </div>
                     {% empty %}
-                    <p class="text-gray-400">Tu carrito está vacío. Añade artículos para tu compra</p>
+                    <!-- Carrito vacío -->
+                    <div class="text-center py-20">
+                        <div class="inline-block p-10 bg-gray-900/50 backdrop-blur-sm rounded-2xl border border-gray-800">
+                            <div class="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-gray-800 to-gray-900 rounded-full flex items-center justify-center border-2 border-gray-700">
+                                <i class="fas fa-shopping-cart text-5xl text-gray-600"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold text-white mb-3">Tu carrito está vacío</h2>
+                            <p class="text-gray-400 mb-6">Añade productos increíbles para comenzar tu compra</p>
+                            <a href="{% url 'client_dashboard' %}" 
+                                class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 text-white font-semibold rounded-lg transition-all duration-300 hover:shadow-[0_0_20px_rgba(56,178,248,0.5)] hover:-translate-y-1">
+                                <i class="fas fa-arrow-left"></i>
+                                <span>Continuar Comprando</span>
+                            </a>
+                        </div>
+                    </div>
                     {% endfor %}
                 </div>
 
-                <!-- Columna de resumen de pago -->
-                <div class="mt-8 lg:mt-0">
-                    <div class="bg-gray-900 rounded-lg shadow-lg border border-sky-500/30 neon-box">
-                        <div class="p-6">
-                            <h2 class="text-xl font-semibold text-white mb-4">Resumen de tu Orden</h2>
+                <!-- Columna de resumen (1/3) -->
+                <div class="lg:col-span-1">
+                    <div class="sticky top-24">
+                        <div class="relative bg-gradient-to-br from-gray-900/95 to-gray-800/90 backdrop-blur-sm rounded-2xl border border-sky-500/30 overflow-hidden shadow-2xl hover:shadow-[0_0_40px_rgba(56,178,248,0.3)] transition-all duration-500">
+                            
+                            <!-- Efecto de borde animado -->
+                            <div class="absolute inset-0 rounded-2xl opacity-50">
+                                <div class="absolute inset-0 rounded-2xl bg-gradient-to-r from-transparent via-sky-400/20 to-transparent blur-sm"></div>
+                            </div>
 
-                            <div class="flow-root">
-                                <dl class="-my-4 divide-y divide-gray-700 text-sm">
+                            <div class="relative p-8">
+                                <!-- Header -->
+                                <div class="mb-6">
+                                    <h2 class="text-2xl font-bold text-white mb-2">Resumen de Orden</h2>
+                                    <div class="w-16 h-1 bg-gradient-to-r from-sky-400 to-transparent"></div>
+                                </div>
+
+                                <!-- Detalles de precio -->
+                                <div class="space-y-4 mb-6">
+                                    
                                     <!-- Subtotal -->
-                                    <div class="py-4 flex items-center justify-between">
-                                        <dt class="text-gray-300">Subtotal</dt>
-                                        <dd class="font-medium text-white">${{ subtotal }}</dd>
+                                    <div class="flex items-center justify-between py-3 border-b border-gray-700/50">
+                                        <dt class="flex items-center gap-2 text-gray-300">
+                                            <i class="fas fa-shopping-bag text-sky-400 text-sm"></i>
+                                            <span>Subtotal</span>
+                                        </dt>
+                                        <dd class="font-semibold text-white text-lg">${{ subtotal }}</dd>
                                     </div>
 
                                     <!-- Envío -->
-                                    <div class="py-4 flex items-center justify-between">
-                                        <dt class="text-gray-300">Envío</dt>
-                                        <dd class="font-medium text-white">Gratis</dd>
+                                    <div class="flex items-center justify-between py-3 border-b border-gray-700/50">
+                                        <dt class="flex items-center gap-2 text-gray-300">
+                                            <i class="fas fa-truck text-green-400 text-sm"></i>
+                                            <span>Envío</span>
+                                        </dt>
+                                        <dd class="flex items-center gap-2">
+                                            <span class="px-3 py-1 bg-green-500/20 border border-green-500/30 rounded-full text-green-400 text-xs font-semibold">
+                                                GRATIS
+                                            </span>
+                                        </dd>
                                     </div>
 
                                     <!-- Impuesto -->
-                                    <div class="py-4 flex items-center justify-between">
-                                        <dt class="text-gray-300">Impuesto (7%)</dt>
-                                        <dd class="font-medium text-white">${{ impuesto|floatformat:2 }}</dd>
+                                    <div class="flex items-center justify-between py-3 border-b border-gray-700/50">
+                                        <dt class="flex items-center gap-2 text-gray-300">
+                                            <i class="fas fa-percentage text-amber-400 text-sm"></i>
+                                            <span>Impuesto (7%)</span>
+                                        </dt>
+                                        <dd class="font-semibold text-white">${{ impuesto|floatformat:2 }}</dd>
                                     </div>
 
                                     <!-- Total -->
-                                    <div class="py-4 flex items-center justify-between">
-                                        <dt class="text-lg font-bold text-white">Total</dt>
-                                        <dd class="text-xl font-bold text-sky-400">${{ total|floatformat:2 }}</dd>
+                                    <div class="flex items-center justify-between py-4 bg-gradient-to-r from-sky-500/10 to-transparent rounded-lg px-4 mt-4">
+                                        <dt class="text-xl font-bold text-white flex items-center gap-2">
+                                            <i class="fas fa-calculator text-sky-400"></i>
+                                            Total
+                                        </dt>
+                                        <dd class="text-3xl font-bold bg-gradient-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
+                                            ${{ total|floatformat:2 }}
+                                        </dd>
                                     </div>
-                                </dl>
-                            </div>
+                                </div>
 
-                            <div class="mt-6">
-                                <a href="{% url 'cart_payment_now' %}"
-                                    class="w-full bg-sky-600 hover:bg-sky-700 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-white font-medium focus:outline-none transition-all duration-300 btn-hover">
-                                    <i class="fas fa-shopping-cart mr-2"></i>
-                                    Proceder al Pago
-                                </a>
+                                <!-- Botón de pago -->
+                                <div class="space-y-4">
+                                    <a href="{% url 'cart_payment_now' %}"
+                                        class="relative w-full py-4 bg-gradient-to-r from-sky-600 to-sky-500 hover:from-sky-500 hover:to-sky-400 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-sky-500/30 hover:shadow-sky-400/50 hover:shadow-2xl transition-all duration-300 overflow-hidden group/btn hover:-translate-y-1 active:translate-y-0">
+                                        <span class="relative z-10 flex items-center gap-3">
+                                            <i class="fas fa-lock text-xl"></i>
+                                            <span>Proceder al Pago</span>
+                                        </span>
+                                        <!-- Efecto ripple -->
+                                        <div class="absolute inset-0 bg-white/20 scale-0 group-hover/btn:scale-100 transition-transform duration-500 rounded-full"></div>
+                                    </a>
+
+                                    <!-- Continuar comprando -->
+                                    <a href="/" 
+                                        class="block w-full py-3 text-center text-gray-300 hover:text-sky-400 font-medium transition-colors duration-300">
+                                        <i class="fas fa-arrow-left mr-2"></i>
+                                        Continuar Comprando
+                                    </a>
+                                </div>
+
+                                <!-- Features de seguridad -->
+                                <div class="mt-6 pt-6 border-t border-gray-700/50">
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div class="flex items-center gap-2 text-xs text-gray-400">
+                                            <i class="fas fa-shield-alt text-green-400"></i>
+                                            <span>Compra segura</span>
+                                        </div>
+                                        <div class="flex items-center gap-2 text-xs text-gray-400">
+                                            <i class="fas fa-undo text-purple-400"></i>
+                                            <span>30 días devolución</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -129,7 +233,9 @@
     </main>
 
     <!-- Footer -->
-    {% include './partials/footer.html' %}
+    <footer class="mt-auto">
+        {% include './partials/footer.html' %}
+    </footer>
 
 </body>
 

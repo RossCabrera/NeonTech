@@ -5,76 +5,230 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NeonTech - Tecnología de última generación</title>
+  <title>{{ producto.name }} - NeonTech</title>
   <link rel="icon" href="{% static 'img/logo.png'%}" type="image/png">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="{% static 'css/client/product_description.css' %}">
-
 </head>
 
-<body class="flex flex-col min-h-screen text-gray-200">
+<body class="flex flex-col min-h-screen text-gray-200 bg-gradient-to-br from-[#0a0a1a] via-[#0f0f2a] to-[#0a0a1a]">
 
-  <!-- Nuevo Navbar -->
+  <!-- Navbar -->
   {% include './partials/header.html' %}
 
   <!-- Contenido Principal -->
-  <main class="flex-grow py-10
-">
-    <!-- Pantalla de Compra -->
-    <div class="max-w-6xl mx-auto px-4 py-10">
-      <div class="flex flex-col md:flex-row gap-10 py-5 items-start">
+  <main class="flex-grow py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Breadcrumb -->
+      <div class="mb-8 flex items-center gap-2 text-sm text-gray-400">
+        <a href="/" class="hover:text-sky-400 transition-colors">Inicio</a>
+        <i class="fas fa-chevron-right text-xs"></i>
+        <span class="text-gray-400">{{ producto.get_category_display }}</span>
+        <i class="fas fa-chevron-right text-xs"></i>
+        <span class="text-sky-400">{{ producto.name }}</span>
+      </div>
 
-        <!-- Carrusel de imágenes -->
-        <div class="w-full md:w-1/2">
-          <div class="relative mb-4">
-            <img id="mainImage" src="{{ producto.img.url }}" alt="{{ producto.name }}"
-              class="rounded-xl w-full h-[28rem] object-cover neon-image" />
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+
+        <!-- Sección de Imágenes -->
+        <div class="space-y-6">
+          <!-- Imagen Principal con efecto -->
+          <div class="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-800 hover:border-sky-500/50 transition-all duration-500 shadow-2xl hover:shadow-[0_0_40px_rgba(56,178,248,0.3)]">
+            
+            <!-- Efecto de brillo -->
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-sky-400/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 pointer-events-none z-10"></div>
+            
+            <!-- Imagen -->
+            <div class="aspect-square flex items-center justify-center p-8">
+              <img id="mainImage" src="{{ producto.img.url }}" alt="{{ producto.name }}"
+                class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105" />
+            </div>
+
+            <!-- Badge de categoría -->
+            <div class="absolute top-4 left-4 z-20">
+              <span class="inline-block px-4 py-2 text-sm font-semibold rounded-full bg-sky-500/20 text-sky-400 border border-sky-500/40 backdrop-blur-sm">
+                <i class="fas fa-tag mr-1"></i>
+                {{ producto.get_category_display }}
+              </span>
+            </div>
           </div>
 
-          <!-- Miniaturas (carrusel) -->
-          <div class="flex gap-2 overflow-x-auto mt-10">
-            {% for imagen in imagenes %}
-            <img src="{{ imagen.imagen.url }}" onclick="changeImage(this.src)"
-              class="thumbnail w-20 h-20 object-cover rounded-lg cursor-pointer" alt="Miniatura de {{ producto.name }}" />
-            {% endfor %}
-
+          <!-- Miniaturas -->
+          {% if imagenes %}
+          <div class="space-y-3">
+            <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Galería</h3>
+            <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-sky-500/50 scrollbar-track-gray-800">
+              {% for imagen in imagenes %}
+              <div class="thumbnail-wrapper group/thumb flex-shrink-0">
+                <img src="{{ imagen.imagen.url }}" onclick="changeImage(this.src)"
+                  class="w-24 h-24 object-cover rounded-lg cursor-pointer border-2 border-gray-700 hover:border-sky-400 transition-all duration-300 hover:scale-105 hover:shadow-[0_0_15px_rgba(56,178,248,0.5)]" 
+                  alt="Vista de {{ producto.name }}" />
+              </div>
+              {% endfor %}
+            </div>
           </div>
+          {% endif %}
         </div>
 
-        <!-- Info del producto -->
-        <div class="w-full md:w-1/2 px-8 space-y-6">
-          <h2 class="text-4xl mt-5 font-bold text-gray-100">{{ producto.name }}</h2>
-          <p class="text-gray-400 text-lg">{{ producto.description }}</p>
-          <p class="text-2xl font-semibold text-cyan-400">${{ producto.price }}</p>
+        <!-- Información del Producto -->
+        <div class="space-y-8">
+          
+          <!-- Título y Descripción -->
+          <div class="space-y-4">
+            <h1 class="text-4xl lg:text-5xl font-bold text-white leading-tight drop-shadow-[0_0_15px_rgba(56,178,248,0.3)]">
+              {{ producto.name }}
+            </h1>
+            
+            <!-- Línea decorativa -->
+            <div class="w-20 h-1 bg-gradient-to-r from-sky-400 to-transparent"></div>
+            
+            <p class="text-gray-300 text-lg leading-relaxed">
+              {{ producto.description }}
+            </p>
+          </div>
 
-          <form method="POST" action="{% url 'add_to_cart' producto.id %}">
+          <!-- Precio -->
+          <div class="bg-gradient-to-r from-gray-900/80 to-gray-800/80 backdrop-blur-sm border border-sky-500/30 rounded-xl p-6 hover:border-sky-400/50 transition-all duration-300">
+            <div class="flex items-baseline gap-3">
+              <span class="text-sm text-gray-400 uppercase tracking-wider">Precio</span>
+              <div class="flex-grow h-px bg-gradient-to-r from-gray-700 to-transparent"></div>
+            </div>
+            <p class="text-5xl font-bold mt-2 bg-gradient-to-r from-sky-400 to-cyan-300 bg-clip-text text-transparent">
+              ${{ producto.price }}
+            </p>
+          </div>
+
+          <!-- Stock Info -->
+          <div class="relative overflow-hidden rounded-xl bg-gradient-to-r from-green-500/10 via-green-400/10 to-green-500/10 border border-green-500/30 p-4">
+            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-green-400/20 to-transparent -translate-x-full animate-[shimmer_3s_infinite]"></div>
+            
+            <div class="relative flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="relative">
+                  <span class="w-4 h-4 bg-green-400 rounded-full block animate-pulse"></span>
+                  <span class="absolute top-0 left-0 w-4 h-4 bg-green-400 rounded-full animate-ping"></span>
+                </div>
+                <p class="text-green-400 font-semibold">Disponible en stock</p>
+              </div>
+              
+              <div class="flex items-center gap-2 bg-green-500/20 px-4 py-2 rounded-full border border-green-400/40">
+                <i class="fas fa-box text-green-400 text-sm"></i>
+                <span class="text-green-300 font-bold">{{ producto.stock }}</span>
+                <span class="text-green-400/70 text-sm">unidades</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formulario de Compra -->
+          <form method="POST" action="{% url 'add_to_cart' producto.id %}" class="space-y-6">
             {% csrf_token %}
-            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
-              <button type="submit"
-                class="w-full sm:w-1/2 mt-5 py-3 bg-sky-600 text-white font-semibold rounded-xl shadow-md hover:bg-sky-700  transition">
-                <i class="fas fa-shopping-cart mr-2"></i>
-                Añadir al carrito 
-              </button>
-              <div class="flex items-center mt-5  gap-3">
+            
+            <!-- Selector de Cantidad -->
+            <div class="space-y-3">
+              <label class="text-sm font-semibold text-gray-400 uppercase tracking-wider">Cantidad</label>
+              <div class="flex items-center gap-4 bg-gray-900/50 backdrop-blur-sm border border-gray-700 rounded-xl p-4 hover:border-sky-500/50 transition-all duration-300">
                 <button type="button" onclick="decreaseQty()"
-                  class="w-10 h-10 bg-sky-600  rounded-full flex items-center justify-center text-xl text-white hover:bg-sky-700  transition">-</button>
+                  class="w-12 h-12 bg-gradient-to-r from-sky-600 to-sky-500 rounded-full flex items-center justify-center text-xl text-white hover:from-sky-500 hover:to-sky-400 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_20px_rgba(56,178,248,0.5)] active:scale-95">
+                  <i class="fas fa-minus"></i>
+                </button>
+                
                 <input type="text" name="cantidad" id="quantity" value="1" readonly
-                  class="w-14 text-center text-lg font-bold text-white bg-gray-900 border border-gray-700 rounded-md shadow-inner" />
+                  class="flex-grow text-center text-2xl font-bold text-white bg-transparent border-0 focus:outline-none" />
+                
                 <button type="button" onclick="increaseQty()"
-                  class="w-10 h-10 bg-sky-600 rounded-full flex items-center justify-center text-xl text-white hover:bg-sky-700 transition">+</button>
+                  class="w-12 h-12 bg-gradient-to-r from-sky-600 to-sky-500 rounded-full flex items-center justify-center text-xl text-white hover:from-sky-500 hover:to-sky-400 transition-all duration-300 hover:scale-110 hover:shadow-[0_0_20px_rgba(56,178,248,0.5)] active:scale-95">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Botón de Añadir al Carrito -->
+            <button type="submit"
+              class="relative w-full py-4 bg-gradient-to-r from-sky-600 to-sky-500 text-white font-bold text-lg rounded-xl shadow-lg shadow-sky-500/30 hover:shadow-sky-400/50 hover:shadow-2xl transition-all duration-300 overflow-hidden group/btn hover:-translate-y-1 active:translate-y-0">
+              <span class="relative z-10 flex items-center justify-center gap-3">
+                <i class="fas fa-shopping-cart text-xl"></i>
+                <span>Añadir al Carrito</span>
+              </span>
+              <!-- Efecto ripple -->
+              <div class="absolute inset-0 bg-white/20 scale-0 group-hover/btn:scale-100 transition-transform duration-500 rounded-full"></div>
+            </button>
+
+            <!-- Features adicionales -->
+            <div class="space-y-3 pt-4">
+              <h3 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">Beneficios incluidos</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                
+                <!-- Feature 1 -->
+                <div class="group relative overflow-hidden bg-gradient-to-r from-gray-900/50 to-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg p-4 hover:border-sky-500/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(56,178,248,0.2)]">
+                  <div class="absolute inset-0 bg-gradient-to-r from-transparent via-sky-400/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                  <div class="relative flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-sky-500/20 flex items-center justify-center border border-sky-500/30 group-hover:scale-110 group-hover:bg-sky-500/30 transition-all duration-300">
+                      <i class="fas fa-shipping-fast text-sky-400 text-lg"></i>
+                    </div>
+                    <div>
+                      <p class="text-white font-medium text-sm">Envío rápido</p>
+                      <p class="text-gray-500 text-xs">2-3 días hábiles</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="group relative overflow-hidden bg-gradient-to-r from-gray-900/50 to-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg p-4 hover:border-sky-500/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(56,178,248,0.2)]">
+                  <div class="absolute inset-0 bg-gradient-to-r from-transparent via-sky-400/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                  <div class="relative flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center border border-green-500/30 group-hover:scale-110 group-hover:bg-green-500/30 transition-all duration-300">
+                      <i class="fas fa-shield-alt text-green-400 text-lg"></i>
+                    </div>
+                    <div>
+                      <p class="text-white font-medium text-sm">Garantía incluida</p>
+                      <p class="text-gray-500 text-xs">12 meses de cobertura</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="group relative overflow-hidden bg-gradient-to-r from-gray-900/50 to-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg p-4 hover:border-sky-500/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(56,178,248,0.2)]">
+                  <div class="absolute inset-0 bg-gradient-to-r from-transparent via-sky-400/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                  <div class="relative flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center border border-purple-500/30 group-hover:scale-110 group-hover:bg-purple-500/30 transition-all duration-300">
+                      <i class="fas fa-undo text-purple-400 text-lg"></i>
+                    </div>
+                    <div>
+                      <p class="text-white font-medium text-sm">Devoluciones fáciles</p>
+                      <p class="text-gray-500 text-xs">30 días sin preguntas</p>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="group relative overflow-hidden bg-gradient-to-r from-gray-900/50 to-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-lg p-4 hover:border-sky-500/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(56,178,248,0.2)]">
+                  <div class="absolute inset-0 bg-gradient-to-r from-transparent via-sky-400/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                  <div class="relative flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center border border-amber-500/30 group-hover:scale-110 group-hover:bg-amber-500/30 transition-all duration-300">
+                      <i class="fas fa-lock text-amber-400 text-lg"></i>
+                    </div>
+                    <div>
+                      <p class="text-white font-medium text-sm">Pago seguro</p>
+                      <p class="text-gray-500 text-xs">Encriptación SSL</p>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
           </form>
+
           {% include '../partials/messages.html' %}
         </div>
       </div>
     </div>
   </main>
 
-  <!-- Footer-->
+  <!-- Footer -->
   <footer class="mt-auto">
-  {% include './partials/footer.html' %}
+    {% include './partials/footer.html' %}
   </footer>
 
   <script src="{% static 'js/client/script.js' %}"></script>

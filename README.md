@@ -135,14 +135,14 @@ NeonTech/
 │       ├── celulares/       # Imágenes de celulares
 │       └── laptops/         # Imágenes de laptops
 │
-├── neontech/                # Directorio principal del proyecto Django
+├── config/                # Directorio principal del proyecto Django
 │   ├── __init__.py
 │   ├── asgi.py
 │   ├── settings.py          # Configuración del proyecto
 │   ├── urls.py              # URLs principales
 │   └── wsgi.py
 │
-├── users/                          # Aplicación del Comercio 
+├── core/                          # Aplicación del Comercio 
 │   ├── templates/                  # Plantillas HTML
 │   │   └── users/                  
 │   │       ├── admin_dashboard/    # Templates de administrador

@@ -1,12 +1,13 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from ..models import Producto, ProductoImagen, Compra, DetalleCompra, Usuarios, Direccion
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.conf import settings
 import os
 import shutil
+
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
+
+from ..models import (Compra, DetalleCompra, Direccion, Producto,
+                      ProductoImagen, Usuarios)
 
 
 @login_required
@@ -20,7 +21,7 @@ def admin_dashboard(request):
     contexto = get_estadistics(request)  # Se obtiene el diccionario de datos
     
     # Pasar tanto el contexto como los productos al template
-    return render(request, 'users/admin_dashboard/inventory.html', {
+    return render(request, 'core/admin_dashboard/inventory.html', {
         'contexto': contexto,
         'productos': productos  # Agregar esta línea para pasar los productos al template
     })
@@ -53,7 +54,7 @@ def inventory_form(request):
         
         if not all([name, description, category, stock, price]):
             messages.error(request, "Todos los campos son obligatorios")
-            return render(request, 'users/admin_dashboard/inventory_form.html')
+            return render(request, 'core/admin_dashboard/inventory_form.html')
         
         try:
             # Crear registro del producto
@@ -119,7 +120,7 @@ def inventory_form(request):
             import traceback
             print(traceback.format_exc())
     
-    return render(request, 'users/admin_dashboard/inventory_form.html')
+    return render(request, 'core/admin_dashboard/inventory_form.html')
 
 @login_required
 def edit_product(request, product_id):
@@ -149,7 +150,7 @@ def edit_product(request, product_id):
         
         if not all([name, description, category, stock, price]):
             messages.error(request, "Todos los campos son obligatorios")
-            return render(request, 'users/admin_dashboard/edit_product.html', {
+            return render(request, 'core/admin_dashboard/edit_product.html', {
                 'producto': producto,
                 'imagenes_adicionales': imagenes_adicionales
             })
@@ -284,7 +285,7 @@ def edit_product(request, product_id):
         except Exception as e:
             messages.error(request, f"Error al actualizar el producto: {str(e)}")
     
-    return render(request, 'users/admin_dashboard/inventory_form.html', {
+    return render(request, 'core/admin_dashboard/inventory_form.html', {
         'producto': producto,
         'imagenes_adicionales': imagenes_adicionales
     })
@@ -353,7 +354,7 @@ def admin_clients(request):
 
     contexto = get_estadistics(request) # Se obtiene el diccionario de datos
 
-    return render(request, 'users/admin_dashboard/client_management.html', {
+    return render(request, 'core/admin_dashboard/client_management.html', {
         'contexto' : contexto,
         'usuarios': datos
     })
@@ -397,7 +398,7 @@ def update_data_users(request, usuario_id, usuario_telefono):
     rol = users.rol
     esta_activo = users.is_active
 
-    return render(request, 'users/admin_dashboard/client_form.html', {
+    return render(request, 'core/admin_dashboard/client_form.html', {
         'usuario_id': usuario_id,
         'primer_nombre': primer_nombre,
         'primer_apellido': primer_apellido,
@@ -482,7 +483,7 @@ def client_form(request):
     if request.user.rol != 'admin':
         return redirect('client_dashboard')
 
-    return render(request, 'users/admin_dashboard/client_form.html')
+    return render(request, 'core/admin_dashboard/client_form.html')
 
 @login_required
 def admin_orders(request):
@@ -495,7 +496,7 @@ def admin_orders(request):
     for compra in compras:
         compra.formatted_total = f"{compra.total:.2f}".replace(',', '.') if compra.total else "0.00"
 
-    return render(request, 'users/admin_dashboard/orders_management.html', {
+    return render(request, 'core/admin_dashboard/orders_management.html', {
         'contexto' : contexto,
         'compras' : compras,
     })

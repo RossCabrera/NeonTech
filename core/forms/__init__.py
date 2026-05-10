@@ -1,8 +1,8 @@
 from ..forms.auth_forms import LoginForm, RegisterForm
+from .admin_forms import OrderStatusForm, ProductForm
 from .client_forms import PaymentForm
-from .admin_forms import ProductForm, OrderStatusForm
 
-# Esto permite importar directamente desde users.forms
+# Esto permite importar directamente desde core.forms
 __all__ = [
     'LoginForm', 
     'RegisterForm',  

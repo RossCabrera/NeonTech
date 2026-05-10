@@ -1,7 +1,6 @@
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
-# Asumiendo que tienes un modelo de Producto
 class ProductForm(forms.ModelForm):
     """
     Formulario para CRUD de productos

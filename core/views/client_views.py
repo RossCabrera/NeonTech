@@ -1,12 +1,14 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.db.models import Sum
 from datetime import datetime
-from django.utils.timezone import now
 from decimal import Decimal
 
-from ..models import Producto, Carrito, Direccion, Tarjeta, Compra, DetalleCompra
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
+from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.timezone import now
+
+from ..models import (Carrito, Compra, DetalleCompra, Direccion, Producto,
+                      Tarjeta)
 
 # Constante para el cálculo de impuestos
 ITBMS_RATE = Decimal('0.07')  # 7%
@@ -17,7 +19,7 @@ def client_dashboard(request):
     carrito_items = Carrito.objects.filter(usuario=request.user)
     articulos = carrito_items.aggregate(Sum('cantidad'))['cantidad__sum'] or 0
 
-    return render(request, 'users/client_dashboard/client_dashboard.html', {
+    return render(request, 'core/client_dashboard/client_dashboard.html', {
         'articulos': articulos
     })
 
@@ -29,7 +31,7 @@ def products_list(request, categoria):
     articulos = carrito_items.aggregate(Sum('cantidad'))['cantidad__sum'] or 0
 
     # Usar una sola plantilla para ambas categorías
-    return render(request, 'users/client_dashboard/search_products_page.html', {
+    return render(request, 'core/client_dashboard/search_products_page.html', {
         'productos': productos,
         'articulos': articulos,
         'categoria': categoria  # Pasar la categoría al template
@@ -43,7 +45,7 @@ def show_detail_product(request, producto_id):
     carrito = Carrito.objects.filter(usuario=request.user)
     articulos = carrito.aggregate(Sum('cantidad'))['cantidad__sum'] or 0
     
-    return render(request, 'users/client_dashboard/product_description.html', {
+    return render(request, 'core/client_dashboard/product_description.html', {
         'producto': producto,
         'imagenes': imagenes,
         'articulos': articulos
@@ -59,7 +61,7 @@ def show_shopping_cart(request):
     impuesto = subtotal * ITBMS_RATE
     total = subtotal + impuesto
 
-    return render(request, 'users/client_dashboard/shopping_cart.html', {
+    return render(request, 'core/client_dashboard/shopping_cart.html', {
         'carrito': carrito,
         'total': total,
         'subtotal': subtotal,
@@ -145,7 +147,7 @@ def cart_payment(request):
     tarjeta = Tarjeta.objects.filter(usuario=request.user).first() if tiene_tarjeta else None
     direccion = request.user.direccion if tiene_direccion else None
 
-    return render(request, 'users/client_dashboard/shopping_cart_payment.html', {
+    return render(request, 'core/client_dashboard/shopping_cart_payment.html', {
         'articulos': articulos,
         'total': total,
         'subtotal': subtotal,
@@ -202,7 +204,7 @@ def link_card(request):
         messages.success(request, "¡Tarjeta vinculada correctamente!")
         return redirect('cart_payment_now')
 
-    return render(request, 'users/client_dashboard/shopping_cart.html')
+    return render(request, 'core/client_dashboard/shopping_cart.html')
 
 @login_required
 def unlink_card(request):
@@ -293,7 +295,7 @@ def process_payment(request):
     carrito_items.delete()
 
     # En lugar de redirigir, renderizamos la misma página con un indicador de éxito
-    return render(request, 'users/client_dashboard/shopping_cart_payment.html', {
+    return render(request, 'core/client_dashboard/shopping_cart_payment.html', {
         'pago_exitoso': True,
         'tiene_tarjeta': True,
         'tiene_direccion': True,

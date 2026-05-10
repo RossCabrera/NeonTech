@@ -1,7 +1,10 @@
+import datetime
+
 from django import forms
 from django.utils.translation import gettext_lazy as _
-import datetime
-from ..models.client import Direccion  # Ajustar según tu modelo
+
+from ..models.client import Direccion 
+
 
 class PaymentForm(forms.Form):
     card_number = forms.CharField(

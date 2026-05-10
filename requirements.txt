@@ -2,15 +2,15 @@ asgiref==3.8.1
 click==8.1.8
 colorama==0.4.6
 cssbeautifier==1.15.4
-dj-database-url==2.3.0
 Django==5.2
+django-environ==0.13.0
 EditorConfig==0.17.0
+isort==8.0.1
 jsbeautifier==1.15.4
 json5==0.12.0
 mysqlclient==2.2.7
 pathspec==0.12.1
 pillow==11.2.1
-python-decouple==3.8
 PyYAML==6.0.2
 regex==2024.11.6
 six==1.17.0

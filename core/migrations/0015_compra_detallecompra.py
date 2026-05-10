@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0014_delete_tarjeta'),
+        ('core', '0014_delete_tarjeta'),
     ]
 
     operations = [
@@ -27,8 +27,8 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('cantidad', models.PositiveIntegerField()),
                 ('precio_unitario', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('compra', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='detalles', to='users.compra')),
-                ('producto', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='users.producto')),
+                ('compra', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='detalles', to='core.compra')),
+                ('producto', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.producto')),
             ],
         ),
     ]

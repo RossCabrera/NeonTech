@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0008_alter_producto_category'),
+        ('core', '0008_alter_producto_category'),
     ]
 
     operations = [
@@ -28,8 +28,8 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('cantidad', models.PositiveIntegerField()),
                 ('subtotal', models.DecimalField(decimal_places=2, max_digits=10)),
-                ('producto', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='users.producto')),
-                ('orden', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='detalles', to='users.orden')),
+                ('producto', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='core.producto')),
+                ('orden', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='detalles', to='core.orden')),
             ],
         ),
         migrations.CreateModel(
@@ -47,6 +47,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='orden',
             name='tarjeta',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='users.tarjeta'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='core.tarjeta'),
         ),
     ]

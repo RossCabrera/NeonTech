@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0003_producto_celular_laptop'),
+        ('core', '0003_producto_celular_laptop'),
     ]
 
     operations = [
@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('imagen', models.ImageField(upload_to='productos/img-per-product')),
-                ('producto', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='galeria', to='users.producto')),
+                ('producto', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='galeria', to='core.producto')),
             ],
         ),
     ]

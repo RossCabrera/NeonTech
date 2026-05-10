@@ -1,5 +1,6 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
+
 
 # Modelo base de usuario compartido
 class Usuarios(AbstractUser):
@@ -28,7 +29,6 @@ class Usuarios(AbstractUser):
     def is_cliente(self):
         return self.rol == 'cliente'
 
-# Importamos aquí para evitar importaciones circulares
 # Nota: Este import debe estar después de la definición de Usuarios
 from .admin import Producto
 

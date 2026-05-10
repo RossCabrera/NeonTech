@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0022_rename_monto_tarjeta_saldo'),
+        ('core', '0022_rename_monto_tarjeta_saldo'),
     ]
 
     operations = [

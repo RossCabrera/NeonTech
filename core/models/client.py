@@ -1,6 +1,8 @@
 from django.db import models
-from .user import Usuarios
+
 from .admin import Producto  # Importamos directamente
+from .user import Usuarios
+
 
 # Modelos relacionados principalmente con el cliente
 class Direccion(models.Model):

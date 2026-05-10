@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0010_remove_orden_tarjeta_remove_orden_usuario_and_more'),
+        ('core', '0010_remove_orden_tarjeta_remove_orden_usuario_and_more'),
     ]
 
     operations = [

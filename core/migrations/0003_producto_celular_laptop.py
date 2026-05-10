@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0002_usuarios_rol'),
+        ('core', '0002_usuarios_rol'),
     ]
 
     operations = [
@@ -26,16 +26,16 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Celular',
             fields=[
-                ('producto_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='users.producto')),
+                ('producto_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='core.producto')),
             ],
-            bases=('users.producto',),
+            bases=('core.producto',),
         ),
         migrations.CreateModel(
             name='Laptop',
             fields=[
-                ('producto_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='users.producto')),
+                ('producto_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='core.producto')),
                 ('type', models.CharField(choices=[('gaming', 'Gaming'), ('hogar', 'Hogar'), ('escuela', 'Escuela')], max_length=20)),
             ],
-            bases=('users.producto',),
+            bases=('core.producto',),
         ),
     ]

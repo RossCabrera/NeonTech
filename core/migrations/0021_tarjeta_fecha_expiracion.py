@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0020_remove_tarjeta_fecha_expiracion'),
+        ('core', '0020_remove_tarjeta_fecha_expiracion'),
     ]
 
     operations = [

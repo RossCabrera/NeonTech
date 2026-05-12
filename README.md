@@ -1,5 +1,5 @@
 
-# 🚀 NeonTech E-Commerce
+# 🛍️ NeonTech E-Commerce
 
 [![Python](https://img.shields.io/badge/Python-3.13.2-336ea0?labelColor=000000\&style=for-the-badge\&logo=python\&logoColor=FFFFFF)](https://www.python.org/)
 [![Django](https://img.shields.io/badge/Django-5.2-092E20?labelColor=000000\&style=for-the-badge\&logo=django\&logoColor=FFFFFF)](https://www.djangoproject.com/)
